@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Kyvra Technology</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="https://i.imgur.com/Xgt5r89.png">
+
+<style>
+:root{
+  --glass:rgba(255,255,255,.08);
+  --border:rgba(255,255,255,.18);
+  --accent:#00ffff;
+  --danger:#ff3b3b;
+  --star:#ffd700;
+  --max:1200px;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,Segoe UI,sans-serif}
+body{background:radial-gradient(circle at top,#050505,#000);color:#fff}
+
+header{
+  position:fixed;top:0;width:100%;padding:20px 60px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(0,0,0,.65);backdrop-filter:blur(20px);z-index:100
+}
+nav a{margin-left:22px;color:#fff;text-decoration:none;cursor:pointer}
+nav a:hover{color:var(--accent)}
+
+.page{min-height:100vh;padding:140px 40px;display:none;animation:fade .35s}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(15px)}to{opacity:1}}
+
+.container{max-width:var(--max);margin:auto}
+.card{background:var(--glass);border:1px solid var(--border);border-radius:26px;padding:32px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px}
+.list{display:flex;flex-direction:column;gap:14px;margin-top:15px}
+
+label{font-size:.85rem;opacity:.85}
+input,textarea,select{
+  width:100%;background:#000;border:1px solid var(--border);
+  color:#fff;padding:14px;border-radius:16px;margin-bottom:10px
+}
+textarea{min-height:90px}
+
+button{
+  background:var(--accent);border:none;color:#000;
+  padding:10px 16px;border-radius:16px;font-weight:700;cursor:pointer
+}
+button.small{padding:6px 10px;font-size:.8rem}
+button.danger{background:var(--danger);color:#fff}
+
+.hero{display:flex;flex-direction:column;align-items:center;gap:50px;text-align:center}
+.hero img{
+  max-width:480px;
+  width:100%;
+  filter:drop-shadow(0 0 35px rgba(0,255,255,.4))
+}
+.stars{color:var(--star);font-size:1.4rem}
+
+.dashboard{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.section{display:flex;flex-direction:column;gap:30px}
+
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;margin:30px 0}
+.metric{background:var(--glass);border-radius:22px;padding:22px;text-align:center}
+.metric h3{color:var(--accent);font-size:2.2rem}
+
+#toast{
+  position:fixed;bottom:25px;right:25px;
+  background:var(--glass);border:1px solid var(--border);
+  padding:16px 22px;border-radius:18px;display:none;z-index:999
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>KYVRA</h2>
+  <nav>
+    <a onclick="go('home')">Home</a>
+    <a onclick="go('idea')">Nossa Ideia</a>
+    <a onclick="go('partners')">Sócios</a>
+    <a onclick="go('projectsPublic')">Projetos</a>
+    <a onclick="go('galleryPublic')">Galeria</a>
+    <a onclick="go('contact')">Contato</a>
+    <a onclick="go('login')">Login</a>
+  </nav>
+</header>
+
+<div id="toast"></div>
+
+<section id="home" class="page active">
+  <div class="container hero">
+    <img src="https://i.imgur.com/Xgt5r89.png">
+    <div class="card" style="max-width:520px">
+      <div id="fbStars" class="stars"></div>
+      <p id="fbText"></p>
+      <b id="fbName"></b><br>
+      <small id="fbCompany"></small>
+    </div>
+  </div>
+</section>
+
+<section id="idea" class="page"><div class="container"><div class="card">
+<h2>Nossa Ideia</h2><br>
+<p>Soluções tecnológicas sólidas, seguras e escaláveis.</p>
+</div></div></section>
+
+<section id="partners" class="page"><div class="container">
+<div class="card"><h2>Sócios</h2><br>
+<p>Especialistas responsáveis pela Kyvra Technology.</p></div><br>
+<div class="grid">
+<div class="card"><h3>Rhaynê</h3><p>Redes, Infraestrutura, Gestão de TI e Desenvolvimento Web</p></div>
+<div class="card"><h3>Rafinha</h3><p>Desenvolvimento de Aplicativos e Front-end</p></div>
+</div></div></section>
+
+<section id="projectsPublic" class="page"><div class="container">
+<div class="card"><h2>Projetos</h2><br><p>Projetos desenvolvidos pela Kyvra Technology.</p></div><br>
+<div class="grid" id="projectsPublicList"></div></div></section>
+
+<section id="galleryPublic" class="page"><div class="container">
+<div class="card"><h2>Galeria</h2><br><p>Imagens e registros.</p></div><br>
+<div class="grid" id="galleryPublicList"></div></div></section>
+
+<section id="contact" class="page"><div class="container">
+<div class="card" style="max-width:520px;margin:auto">
+<h2>Contato</h2><br>
+<label>Nome</label><input id="cname">
+<label>Email</label><input id="cemail">
+<label>Mensagem</label><textarea id="cmsg"></textarea>
+<button onclick="sendContact()">Enviar</button>
+</div></div></section>
+
+<section id="login" class="page"><div class="container">
+<div class="card" style="max-width:420px;margin:auto;text-align:center">
+<h2>Acesso ao Painel Administrativo</h2><br>
+<p>Insira seu usuário e senha para acessar o sistema Kyvra.</p><br>
+<label>Usuário</label><input id="lu">
+<label>Senha</label><input id="lp" type="password" onkeydown="if(event.key==='Enter')login()">
+<button onclick="login()">Entrar</button>
+</div></div></section>
+
+<section id="dashboard" class="page"><div class="container">
+
+<div class="card">
+<h2>Painel Administrativo</h2><br>
+<p id="welcome"></p>
+<p>Gerencie projetos, galeria, feedbacks, usuários e contatos.</p><br>
+<button class="danger small" onclick="logout()">Sair</button>
+</div>
+
+<div class="metrics">
+<div class="metric"><h3 id="mProjects">0</h3><p>Projetos</p></div>
+<div class="metric"><h3 id="mGallery">0</h3><p>Galeria</p></div>
+<div class="metric"><h3 id="mFeedback">0</h3><p>Feedbacks</p></div>
+<div class="metric"><h3 id="mContacts">0</h3><p>Contatos</p></div>
+<div class="metric"><h3 id="mUsers">0</h3><p>Usuários</p></div>
+</div>
+
+<div class="dashboard">
+
+<div class="section">
+
+<div class="card">
+<h3>Projetos</h3>
+<label>Título</label><input id="pt">
+<label>Descrição</label><textarea id="pd"></textarea>
+<label>Imagem (URL)</label><input id="pi">
+<button onclick="saveProject()">Salvar</button>
+<div id="projectsList" class="list"></div>
+</div>
+
+<div class="card">
+<h3>Galeria</h3>
+<label>Imagem (URL)</label><input id="gi">
+<button onclick="saveGallery()">Salvar</button>
+<div id="galleryList" class="list"></div>
+</div>
+
+</div>
+
+<div class="section">
+
+<div class="card">
+<h3>Feedback</h3>
+<label>Depoimento</label><textarea id="ft"></textarea>
+<label>Nome</label><input id="fn">
+<label>Empresa</label><input id="fc">
+<label>Estrelas</label>
+<select id="fs">
+<option value="">Selecione</option>
+<option value="1">⭐</option><option value="2">⭐⭐</option>
+<option value="3">⭐⭐⭐</option><option value="4">⭐⭐⭐⭐</option>
+<option value="5">⭐⭐⭐⭐⭐</option>
+</select>
+<button onclick="saveFeedback()">Salvar</button>
+<div id="feedbackList" class="list"></div>
+</div>
+
+<div class="card">
+<h3>Usuários</h3>
+<label>Novo usuário</label><input id="nu">
+<label>Senha</label><input id="np">
+<button onclick="addUser()">Adicionar Usuário</button>
+</div>
+
+<div class="card">
+<h3>Alterar Senha</h3>
+<label>Usuário</label>
+<select id="userSelect"></select>
+<label>Nova senha</label><input id="newPass">
+<button onclick="changePass()">Alterar</button>
+</div>
+
+<div class="card">
+<h3>Mensagens de Contato</h3>
+<div id="contactsList" class="list"></div>
+</div>
+
+<div class="card">
+<h3>Histórico</h3>
+<div id="history" class="list"></div>
+</div>
+
+</div>
+
+</div>
+</div></section>
+
+<script>
+function go(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(p).classList.add('active')}
+const toastEl=document.getElementById('toast');
+const toast=m=>{toastEl.innerText=m;toastEl.style.display='block';setTimeout(()=>toastEl.style.display='none',3000)}
+
+let users=JSON.parse(localStorage.getItem('users'))||[
+{u:'__root',p:'kyvra@root'},
+{u:'kyvra_rhayne',p:'K!vr4@S0c10'},
+{u:'kyvra_rafinha',p:'K!vr4#S0c10'}];
+localStorage.setItem('users',JSON.stringify(users));
+
+let projects=JSON.parse(localStorage.getItem('projects'))||[];
+let gallery=JSON.parse(localStorage.getItem('gallery'))||[];
+let feedbacks=JSON.parse(localStorage.getItem('feedbacks'))||[];
+let contacts=JSON.parse(localStorage.getItem('contacts'))||[];
+let historyLog=JSON.parse(localStorage.getItem('history'))||[];
+
+let editP=null,editG=null,editF=null;
+
+function log(msg){
+historyLog.unshift(new Date().toLocaleString()+" • "+msg);
+localStorage.setItem('history',JSON.stringify(historyLog));
+render();
+}
+
+function populateUsers(){
+userSelect.innerHTML='';
+users.forEach(u=>userSelect.innerHTML+=`<option value="${u.u}">${u.u}</option>`);
+}
+
+function login(){
+const u=users.find(x=>x.u===lu.value&&x.p===lp.value);
+if(!u)return toast('Login inválido');
+welcome.innerText="Oi @"+u.u+"!";
+populateUsers();
+go('dashboard');
+render();
+}
+function logout(){go('login')}
+
+function addUser(){
+if(!nu.value||!np.value)return toast('Preencha usuário e senha');
+users.push({u:nu.value,p:np.value});
+localStorage.setItem('users',JSON.stringify(users));
+log("Usuário criado: "+nu.value);
+nu.value=np.value='';
+populateUsers();
+}
+
+function changePass(){
+const u=users.find(x=>x.u===userSelect.value);
+if(!u||!newPass.value)return toast('Erro ao alterar senha');
+u.p=newPass.value;
+localStorage.setItem('users',JSON.stringify(users));
+log("Senha alterada: "+u.u);
+newPass.value='';
+}
+
+function sendContact(){
+if(!cname.value||!cemail.value||!cmsg.value)return toast('Preencha todos os campos');
+contacts.unshift({n:cname.value,e:cemail.value,m:cmsg.value,d:new Date().toLocaleString()});
+localStorage.setItem('contacts',JSON.stringify(contacts));
+log("Nova mensagem de contato: "+cname.value);
+cname.value=cemail.value=cmsg.value='';
+toast('Mensagem enviada com sucesso');
+}
+
+function saveProject(){
+if(!pt.value||!pd.value)return toast('Título e descrição obrigatórios');
+if(editP!==null){projects[editP]={t:pt.value,d:pd.value,i:pi.value};log("Projeto editado");editP=null;}
+else{projects.push({t:pt.value,d:pd.value,i:pi.value});log("Projeto criado");}
+localStorage.setItem('projects',JSON.stringify(projects));
+pt.value=pd.value=pi.value='';render();
+}
+function editProject(i){pt.value=projects[i].t;pd.value=projects[i].d;pi.value=projects[i].i;editP=i}
+function delProject(i){projects.splice(i,1);localStorage.setItem('projects',JSON.stringify(projects));log("Projeto excluído")}
+
+function saveGallery(){
+if(!gi.value)return toast('Imagem obrigatória');
+if(editG!==null){gallery[editG]={i:gi.value};log("Imagem editada");editG=null;}
+else{gallery.push({i:gi.value});log("Imagem adicionada");}
+localStorage.setItem('gallery',JSON.stringify(gallery));
+gi.value='';render();
+}
+function editGallery(i){gi.value=gallery[i].i;editG=i}
+function delGallery(i){gallery.splice(i,1);localStorage.setItem('gallery',JSON.stringify(gallery));log("Imagem excluída")}
+
+function saveFeedback(){
+if(!ft.value||!fn.value||!fc.value||!fs.value)return toast('Preencha todos os campos');
+if(editF!==null){feedbacks[editF]={t:ft.value,n:fn.value,c:fc.value,s:fs.value};log("Feedback editado");editF=null;}
+else{feedbacks.push({t:ft.value,n:fn.value,c:fc.value,s:fs.value});log("Feedback criado");}
+localStorage.setItem('feedbacks',JSON.stringify(feedbacks));
+ft.value=fn.value=fc.value='';fs.value='';render();
+}
+function editFeedback(i){const f=feedbacks[i];ft.value=f.t;fn.value=f.n;fc.value=f.c;fs.value=f.s;editF=i}
+function delFeedback(i){feedbacks.splice(i,1);localStorage.setItem('feedbacks',JSON.stringify(feedbacks));log("Feedback excluído")}
+
+function render(){
+projectsList.innerHTML=projects.map((p,i)=>`
+<div class="card"><b>${p.t}</b>
+<button class="small" onclick="editProject(${i})">Editar</button>
+<button class="danger small" onclick="delProject(${i})">Excluir</button></div>`).join('');
+
+galleryList.innerHTML=gallery.map((g,i)=>`
+<div class="card"><small>${g.i}</small>
+<button class="small" onclick="editGallery(${i})">Editar</button>
+<button class="danger small" onclick="delGallery(${i})">Excluir</button></div>`).join('');
+
+feedbackList.innerHTML=feedbacks.map((f,i)=>`
+<div class="card">${f.n} • ${"★".repeat(f.s)}
+<button class="small" onclick="editFeedback(${i})">Editar</button>
+<button class="danger small" onclick="delFeedback(${i})">Excluir</button></div>`).join('');
+
+contactsList.innerHTML=contacts.map(c=>`
+<div class="card"><b>${c.n}</b> (${c.e})<br><small>${c.d}</small><p>${c.m}</p></div>`).join('');
+
+history.innerHTML=historyLog.length
+?historyLog.map(h=>`<div>${h}</div>`).join('')
+:"<div>Nenhuma ação registrada.</div>";
+
+mProjects.innerText=projects.length;
+mGallery.innerText=gallery.length;
+mFeedback.innerText=feedbacks.length;
+mContacts.innerText=contacts.length;
+mUsers.innerText=users.length;
+
+projectsPublicList.innerHTML=projects.map(p=>`
+<div class="card">${p.i?`<img src="${p.i}" style="width:100%;border-radius:18px">`:""}
+<h3>${p.t}</h3><p>${p.d}</p></div>`).join('');
+
+galleryPublicList.innerHTML=gallery.map(g=>`
+<div class="card"><img src="${g.i}" style="width:100%;border-radius:18px"></div>`).join('');
+
+if(feedbacks.length){
+const f=feedbacks[feedbacks.length-1];
+fbStars.innerHTML="★".repeat(f.s);
+fbText.innerText=f.t;
+fbName.innerText=f.n;
+fbCompany.innerText=f.c;
+}
+}
+render();
+</script>
+
+</body>
+</html>

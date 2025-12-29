@@ -355,11 +355,11 @@ mContacts.innerText=contacts.length;
 mUsers.innerText=users.length;
 
 projectsPublicList.innerHTML=projects.map(p=>`
-<div class="card">${p.i?`<img src="${p.i}" style="width:100%;border-radius:18px">`:""}
+<div class="card">${p.i?`<img src="${p.i}" style="width:50%;border-radius:18px">`:""}
 <h3>${p.t}</h3><p>${p.d}</p></div>`).join('');
 
 galleryPublicList.innerHTML=gallery.map(g=>`
-<div class="card"><img src="${g.i}" style="width:100%;border-radius:18px"></div>`).join('');
+<div class="card"><img src="${g.i}" style="width:50%;border-radius:18px"></div>`).join('');
 
 if(feedbacks.length){
 const f=feedbacks[feedbacks.length-1];

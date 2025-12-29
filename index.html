@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -111,8 +110,8 @@ button.danger{background:var(--danger);color:#fff}
 <div class="card"><h2>Sócios</h2><br>
 <p>Especialistas responsáveis pela Kyvra Technology.</p></div><br>
 <div class="grid">
-<div class="card"><h3>Rhaynê</h3><p>Redes, Infraestrutura, Gestão de TI e Desenvolvimento Web</p></div>
-<div class="card"><h3>Rafinha</h3><p>Desenvolvimento de Aplicativos e Front-end</p></div>
+<div class="card"><img src="https://i.imgur.com/Xgt5r89.png" style="width:80px;display:block;margin:0 auto 12px"><h3>Rhaynê</h3><p>Redes, Infraestrutura, Gestão de TI e Desenvolvimento Web</p></div>
+<div class="card"><img src="https://i.imgur.com/Xgt5r89.png" style="width:80px;display:block;margin:0 auto 12px"><h3>Rafinha</h3><p>Desenvolvimento de Aplicativos e Front-end</p></div>
 </div></div></section>
 
 <section id="projectsPublic" class="page"><div class="container">
@@ -167,6 +166,7 @@ button.danger{background:var(--danger);color:#fff}
 <label>Título</label><input id="pt">
 <label>Descrição</label><textarea id="pd"></textarea>
 <label>Imagem (URL)</label><input id="pi">
+<label>Desenvolvedor</label><input id="pdev" placeholder="Nome do desenvolvedor">
 <button onclick="saveProject()">Salvar</button>
 <div id="projectsList" class="list"></div>
 </div>
@@ -297,10 +297,10 @@ toast('Mensagem enviada com sucesso');
 
 function saveProject(){
 if(!pt.value||!pd.value)return toast('Título e descrição obrigatórios');
-if(editP!==null){projects[editP]={t:pt.value,d:pd.value,i:pi.value};log("Projeto editado");editP=null;}
-else{projects.push({t:pt.value,d:pd.value,i:pi.value});log("Projeto criado");}
+if(editP!==null){projects[editP]={t:pt.value,d:pd.value,i:pi.value,dev:pdev.value};log("Projeto editado");editP=null;}
+else{projects.push({t:pt.value,d:pd.value,i:pi.value,dev:pdev.value});log("Projeto criado");}
 localStorage.setItem('projects',JSON.stringify(projects));
-pt.value=pd.value=pi.value='';render();
+pt.value=pd.value=pi.value=pdev.value='';render();
 }
 function editProject(i){pt.value=projects[i].t;pd.value=projects[i].d;pi.value=projects[i].i;editP=i}
 function delProject(i){projects.splice(i,1);localStorage.setItem('projects',JSON.stringify(projects));log("Projeto excluído")}
@@ -354,12 +354,18 @@ mFeedback.innerText=feedbacks.length;
 mContacts.innerText=contacts.length;
 mUsers.innerText=users.length;
 
-projectsPublicList.innerHTML=projects.map(p=>`
-<div class="card">${p.i?`<img src="${p.i}" style="width:50%;border-radius:18px">`:""}
-<h3>${p.t}</h3><p>${p.d}</p></div>`).join('');
+projectsPublicList.innerHTML = projects.map(p => `
+<div class="card" style="text-align:center">
+  ${p.i ? `<img src="${p.i}" style="width:50%;display:block;margin:0 auto 18px;border-radius:18px">` : ""}
+  <h3 style="margin-bottom:14px">${p.t}</h3>
+  <p>${p.d}</p>
+  ${p.dev ? `<small style="display:block;margin-top:12px;opacity:.6">Desenvolvedor: ${p.dev}</small>` : ""}
+</div>`).join('');
 
-galleryPublicList.innerHTML=gallery.map(g=>`
-<div class="card"><img src="${g.i}" style="width:50%;border-radius:18px"></div>`).join('');
+galleryPublicList.innerHTML = gallery.map(g => `
+<div class="card" style="text-align:center">
+  <img src="${g.i}" style="width:50%;display:block;margin:0 auto;border-radius:18px">
+</div>`).join('');
 
 if(feedbacks.length){
 const f=feedbacks[feedbacks.length-1];
@@ -371,6 +377,12 @@ fbCompany.innerText=f.c;
 }
 render();
 </script>
+
+
+<footer style="text-align:center;opacity:.6;padding:40px 10px">
+  <p>Kyvra Technology</p>
+  <p>© 2025 – Todos os direitos reservados</p>
+</footer>
 
 </body>
 </html>
